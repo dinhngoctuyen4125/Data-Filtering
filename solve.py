@@ -1,7 +1,7 @@
 import os
 import json
 import numpy as np
-from tqdm import tqdm  # Thay đổi: Dùng tqdm chuẩn cho giao diện dòng lệnh (terminal)
+from tqdm import tqdm
 import torch
 import torch.nn.functional as F
 from numpy.linalg import norm
@@ -15,16 +15,14 @@ BASE_DIR = os.path.dirname(__file__)
 ALL_SAMPLES = os.path.join(BASE_DIR, "all_libraries_filtered_predictions.json")
 EDAPI_SAMPLES = os.path.join(BASE_DIR, "deepseek_edapi.json")
 
-THRESHOLD = 0.9
+THRESHOLD = 0.8
 BATCH_SIZE = 128
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def cosine_similarity(vec_a, vec_b):
-    """Hàm này hiện không dùng đến do đã dùng torch.mm bên dưới, nhưng vẫn giữ nguyên logic gốc"""
-    return np.dot(vec_a, vec_b) / (norm(vec_a) * norm(vec_b))
+# def cosine_similarity(vec_a, vec_b):
+#     return np.dot(vec_a, vec_b) / (norm(vec_a) * norm(vec_b))
 
 def get_embeddings(data_list, model):
-    """Đưa model vào làm tham số truyền vào để gọi biến cục bộ an toàn hơn"""
     prompts = [item["prompt"] for item in data_list]
     embeddings = []
     
@@ -55,7 +53,7 @@ def main():
     edapi_prompts = set(item["prompt"] for item in edapi_data)
     filtered_exact_data = [item for item in all_data if item["prompt"] not in edapi_prompts]
 
-    with open('filtered_data.json', 'w', encoding='utf-8') as f:
+    with open('filtered_exact_data.json', 'w', encoding='utf-8') as f:
         json.dump(filtered_exact_data, f, ensure_ascii=False, indent=4)
 
     print(f"Số lượng mẫu ban đầu trong all_data: {len(all_data)}")
@@ -70,7 +68,7 @@ def main():
         "jinaai/jina-embeddings-v2-base-code", 
         trust_remote_code=True
     )
-    model = model.to(DEVICE) # Fix nhỏ: Đẩy model lên GPU để chạy nhanh hơn
+    model = model.to(DEVICE)
     model.eval()
 
     # ==========================================
@@ -106,7 +104,7 @@ def main():
     if len(step1_filtered_data) > 0:
         # Bắt đầu với mẫu đầu tiên
         final_kept_data.append(step1_filtered_data[0])
-        kept_embs = step1_filtered_embs[0].unsqueeze(0) # (1, 768)
+        kept_embs = step1_filtered_embs[0].unsqueeze(0)
 
         for i in tqdm(range(1, len(step1_filtered_data)), desc="Deduplicating"):
             curr_emb = step1_filtered_embs[i].unsqueeze(0)
@@ -127,8 +125,7 @@ def main():
     with open('filter_cosine_all.json', 'w', encoding='utf-8') as f:
         json.dump(final_kept_data, f, ensure_ascii=False, indent=4)
         
-    print("\nHoàn tất lưu file 'filter_cosine_all.json'!")
+    print("\nHoàn tất lưu file 'filter_cosine_data.json'!")
 
-# Điểm khởi chạy của file Python
 if __name__ == "__main__":
     main()
