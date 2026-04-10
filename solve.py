@@ -1,3 +1,4 @@
+import os
 import json
 import numpy as np
 from tqdm import tqdm  # Thay đổi: Dùng tqdm chuẩn cho giao diện dòng lệnh (terminal)
@@ -9,8 +10,10 @@ from transformers import AutoModel
 # ==========================================
 # CẤU HÌNH ĐƯỜNG DẪN VÀ THAM SỐ
 # ==========================================
-ALL_SAMPLES = "/kaggle/input/datasets/meoconbngu/all-libraries/all_libraries_filtered_predictions.json"
-EDAPI_SAMPLES = "/kaggle/input/datasets/meoconbngu/all-libraries/deepseek_edapi.json"
+BASE_DIR = os.path.dirname(__file__)
+
+ALL_SAMPLES = os.path.join(BASE_DIR, "all_libraries_filtered_predictions.json")
+EDAPI_SAMPLES = os.path.join(BASE_DIR, "deepseek_edapi.json")
 
 THRESHOLD = 0.9
 BATCH_SIZE = 128
