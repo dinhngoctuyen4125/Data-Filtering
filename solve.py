@@ -12,7 +12,7 @@ from transformers import AutoModel
 # ==========================================
 BASE_DIR = os.path.dirname(__file__)
 
-ALL_SAMPLES = os.path.join(BASE_DIR, "all_libraries_filtered_predictions.json")
+ALL_SAMPLES = os.path.join(BASE_DIR, "all_libraries_merged_deepseek.json")
 EDAPI_SAMPLES = os.path.join(BASE_DIR, "deepseek_edapi.json")
 
 THRESHOLD = 0.8
