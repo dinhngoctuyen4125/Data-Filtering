@@ -41,12 +41,12 @@ def main():
     # ==========================================
     # 1. ĐỌC VÀ LỌC EXACT MATCH (Khớp hoàn toàn)
     # ==========================================
-    # print("Đang đọc dữ liệu JSON...")
-    # with open(ALL_SAMPLES, 'r', encoding='utf-8') as f:
-    #     all_data = json.load(f)
+    print("Đang đọc dữ liệu JSON...")
+    with open(ALL_SAMPLES, 'r', encoding='utf-8') as f:
+        all_data = json.load(f)
 
-    # with open(EDAPI_SAMPLES, 'r', encoding='utf-8') as f:
-    #     edapi_data = json.load(f)
+    with open(EDAPI_SAMPLES, 'r', encoding='utf-8') as f:
+        edapi_data = json.load(f)
 
     # edapi_prompts = set(item["prompt"] for item in edapi_data)
     # filtered_exact_data = [item for item in all_data if item["prompt"] not in edapi_prompts]
