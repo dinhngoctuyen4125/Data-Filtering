@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 from numpy.linalg import norm
 from transformers import AutoModel
+import gc
 
 # ==========================================
 # CẤU HÌNH ĐƯỜNG DẪN VÀ THAM SỐ
@@ -48,16 +49,6 @@ def main():
     with open(EDAPI_SAMPLES, 'r', encoding='utf-8') as f:
         edapi_data = json.load(f)
 
-    # edapi_prompts = set(item["prompt"] for item in edapi_data)
-    # filtered_exact_data = [item for item in all_data if item["prompt"] not in edapi_prompts]
-
-    # with open('filtered_exact_data.json', 'w', encoding='utf-8') as f:
-    #     json.dump(filtered_exact_data, f, ensure_ascii=False, indent=4)
-
-    # print(f"Số lượng mẫu ban đầu trong all_data: {len(all_data)}")
-    # print(f"Số lượng mẫu trong edapi_data: {len(edapi_data)}")
-    # print(f"Số lượng mẫu giữ lại sau khi lọc exact match: {len(filtered_exact_data)}")
-
     # ==========================================
     # 2. KHỞI TẠO MÔ HÌNH NHÚNG (EMBEDDING MODEL)
     # ==========================================
@@ -78,6 +69,10 @@ def main():
     print("\nTrích xuất embeddings cho all_data...")
     all_embs = get_embeddings(all_data, model)
 
+    del model
+    torch.cuda.empty_cache()
+    gc.collect()
+
     # ==========================================
     # 4. LỌC BƯỚC 1: all_data vs edapi_data
     # ==========================================
@@ -91,6 +86,14 @@ def main():
     step1_filtered_embs = all_embs[valid_indices_step1]
 
     print(f"-> Số mẫu còn lại sau Bước 1: {len(step1_filtered_data)}")
+
+    del edapi_embs
+    del similarity_matrix_step1
+    del max_sims_step1
+    del all_embs  # Chỉ giữ lại step1_filtered_embs cho Bước 2
+    del valid_indices_step1
+    torch.cuda.empty_cache()
+    gc.collect()
 
     # ==========================================
     # 5. LỌC BƯỚC 2: Loại bỏ trùng lặp nội bộ (Deduplication)
@@ -120,7 +123,7 @@ def main():
     with open('filter_cosine_all.json', 'w', encoding='utf-8') as f:
         json.dump(final_kept_data, f, ensure_ascii=False, indent=4)
 
-    print("\nHoàn tất lưu file 'filter_cosine_data.json'!")
+    print("\nHoàn tất lưu file 'filter_cosine_all.json'!")
 
 if __name__ == "__main__":
     main()
