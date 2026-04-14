@@ -17,7 +17,7 @@ ALL_SAMPLES = os.path.join(BASE_DIR, "all_libraries_merged_deepseek.json")
 EDAPI_SAMPLES = os.path.join(BASE_DIR, "edapi_deepseek.json")
 
 THRESHOLD = 0.8
-BATCH_SIZE = 8
+BATCH_SIZE = 4
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # def cosine_similarity(vec_a, vec_b):
