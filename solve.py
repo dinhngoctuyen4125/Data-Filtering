@@ -13,10 +13,10 @@ import gc
 # ==========================================
 BASE_DIR = os.path.dirname(__file__)
 
-ALL_SAMPLES = os.path.join(BASE_DIR, "all_libraries_merged_deepseek.json")
+ALL_SAMPLES = os.path.join(BASE_DIR, "llms_deepseek.json")
 EDAPI_SAMPLES = os.path.join(BASE_DIR, "edapi_deepseek.json")
 
-THRESHOLD = 0.8
+THRESHOLD = 0.7
 BATCH_SIZE = 2
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -123,7 +123,7 @@ def main():
     with open('filter_cosine_all.json', 'w', encoding='utf-8') as f:
         json.dump(final_kept_data, f, ensure_ascii=False, indent=4)
 
-    print("\nHoàn tất lưu file 'filter_cosine_all.json'!")
+    print("\nHoàn tất lưu file 'cosine_deepseek.json'!")
 
 if __name__ == "__main__":
     main()
